@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MessagingApp.View.UserProfileScreen"
+             Shell.NavBarIsVisible="False"
+             xmlns:viewModel="clr-namespace:MessagingApp"
+             xmlns:local="clr-namespace:MessagingApp.View">
+    <ContentPage.BindingContext>
+        <viewModel:UserProfileScreenViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <Style TargetType="Frame" x:Name="FrameProfileStyle">
+            <Setter Property="BorderColor"
+                    Value="#10000000"/>
+            <Setter Property="BackgroundColor"
+                    Value="#10000000"/>
+            <Setter Property="HasShadow"
+                    Value="True"/>
+            <Setter Property="CornerRadius"
+                    Value="15"/>
+            <Setter Property="Padding"
+                    Value="{OnPlatform Android='15,10,15,10'}"/>
+        </Style>
+    </ContentPage.Resources>
+    <ScrollView>
+        <Grid>
+            <Image Source="chatbackgroundimage" 
+                   Opacity="0.3"
+                   Aspect="Center"/>
+            <StackLayout>
+                <StackLayout Spacing="-80">
+                <Border Stroke="#282E42"
+                    BackgroundColor="#282E42"
+                    StrokeShape="RoundRectangle 0,0,100,100"
+                    HorizontalOptions="FillAndExpand"
+                    HeightRequest="150"/>
+                  <Border StrokeShape="RoundRectangle 80"
+                        Stroke="#10000000"
+                        HeightRequest="130"
+                        WidthRequest="130"
+                        HorizontalOptions="StartAndExpand"
+                        Margin="30,0,0,0">
+                        <Image Source="{Binding Profile.ImageUserProfile}"
+                               Aspect="AspectFill">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChooseProfilePhotoCommand}"
+                                                      NumberOfTapsRequired="1"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Border>
+                </StackLayout>
+                <StackLayout VerticalOptions="FillAndExpand"
+                             Padding="20"
+                             Margin="0,30,0,0"
+                             Spacing="15">
+                    <Frame Style="{StaticResource FrameProfileStyle}" >
+                        <StackLayout Orientation="Horizontal"
+                                     Spacing="10">
+                            <Image Source="user"/>
+                            <Entry HorizontalOptions="FillAndExpand"
+                                   Placeholder="Enter Name"
+                                   PlaceholderColor="DarkSlateGray"
+                                   Keyboard="Plain"
+                                   Text="{Binding Profile.UserProfileDataModel.UserName}"
+                                   IsEnabled="{Binding IsEditEnable}"
+                                   FontSize="16"/>
+                        </StackLayout>
+                    </Frame>
+                    <Label TextColor="Red"
+                           Text="{Binding Profile.UserProfileDataModel.ErrorMessageUserName}"
+                            Margin="15,-10,0,0"/>
+                    <Frame Style="{StaticResource FrameProfileStyle}" >
+                        <StackLayout Orientation="Horizontal"
+                                     Spacing="10">
+                            <Image Source="contact"/>
+                            <Entry HorizontalOptions="FillAndExpand"
+                                   FontSize="16"
+                                   Text="{Binding UserMobileNumber}"
+                                   IsReadOnly="True"/>
+                        </StackLayout>
+                    </Frame>
+                    <Frame Style="{StaticResource FrameProfileStyle}" >
+                        <StackLayout Orientation="Horizontal"
+                                     Spacing="10">
+                            <Image Source="calendar"/>
+                            <DatePicker HorizontalOptions="FillAndExpand"
+                                        FontSize="16"
+                                        Format="dd MMMM yyyy"                                        
+                                        MaximumDate="{Binding MaxDate}"
+                                        Date="{Binding DOB}"/>
+                        </StackLayout>
+                    </Frame>
+                    <Frame Style="{StaticResource FrameProfileStyle}">
+                        <StackLayout Orientation="Horizontal"
+                                     Spacing="10"
+                                     >
+                            <Image Source="about"
+                                   VerticalOptions="Start"
+                                   Margin="0,10,0,0"/>
+                            <Editor HorizontalOptions="FillAndExpand"
+                                    AutoSize="TextChanges"
+                                    Text="{Binding UserBio}"
+                                    Placeholder="Enter Bio (optional)"
+                                    PlaceholderColor="DarkSlateGray"
+                                    VerticalTextAlignment="Start"
+                                    VerticalOptions="Start"
+                                    IsEnabled="{Binding IsEditEnable}"
+                                    HeightRequest="100"
+                                    FontSize="16"/>
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+                <Button Text="Continue"
+                        BackgroundColor="#359AF8"
+                        Margin="20,0,20,20"
+                        CornerRadius="30"
+                        Command="{Binding LoadNextPageCommand}"/>
+            </StackLayout>
+            <Border StrokeShape="RoundRectangle 100,100,0,0"
+                    IsVisible="{Binding IsSheetVisible}"
+                    HeightRequest="200"
+                    VerticalOptions="End" >
+                <Grid  >
+                    <local:BottomSheetScreen x:Name="BottomSheetContainer"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollView>
+</ContentPage>

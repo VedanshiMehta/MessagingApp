@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MessagingApp.WelcomeScreen"
+             xmlns:local="clr-namespace:MessagingApp"
+             Shell.NavBarIsVisible="False">
+    <ContentPage.BindingContext>
+        <local:WelcomeScreenViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <Style TargetType="Entry" x:Key="EntryWhiteStyle">
+            <Setter Property="HorizontalOptions"
+                    Value="FillAndExpand"/>
+            <Setter Property="TextColor"
+                    Value="White"/>
+            <Setter Property="FontAttributes"
+                    Value="Bold"/>
+            <Setter Property="VerticalOptions"
+                    Value="FillAndExpand"/>
+        </Style>
+        <Style TargetType="Entry" x:Key="EntryOTPStyle">
+            <Setter Property="MaxLength"
+                    Value="1"/>
+            <Setter Property="Keyboard"
+                    Value="Numeric"/>
+            <Setter Property="HorizontalTextAlignment"
+                    Value="Center"/>
+            <Setter Property="VerticalTextAlignment"
+                    Value="Center"/>
+        </Style>
+    </ContentPage.Resources>
+    <ScrollView>
+        <Grid>
+            <Image Source="chatbackgroundimage" 
+                   Opacity="0.3"
+                   Aspect="Center"/>
+            <StackLayout>
+                <Border Stroke="#282E42"
+                    BackgroundColor="#282E42"
+                    StrokeShape="RoundRectangle 0,0,100,100"
+                    Padding="40,50,0,40">
+                    <StackLayout VerticalOptions="CenterAndExpand"
+                             Spacing="5">
+                        <Label Style="{StaticResource EntryWhiteStyle}"
+                               Text="{Binding WelcomeText}"
+                               FontSize="20"/>
+                        <Label Style="{StaticResource EntryWhiteStyle}"
+                           Text="{Binding WelcomeTitle}"
+                               IsVisible="{Binding IsWelcomeTitleVisible}"
+                           FontSize="14"/>
+                        <RoundRectangle Fill="White"
+                              WidthRequest="40"
+                              HeightRequest="5"
+                              HorizontalOptions="Start" 
+                              CornerRadius="10"
+                              Margin="0,5,0,0"/>
+                    </StackLayout>
+                </Border>
+                <!-- Entry Mobile Number Screen-->
+                <StackLayout VerticalOptions="CenterAndExpand"
+                              Margin="20,0"
+                             IsVisible="{Binding IsRegisterScreen}">
+                <Frame Padding="{OnPlatform Android='10,5,10,5'}"
+                       HasShadow="True"
+                       CornerRadius="30"
+                       BackgroundColor="#10000000"
+                       BorderColor="#10000000">
+                    <local:PrefixEntry x:Name="phoneNumberEntry" 
+                               Prefix="+91" 
+                               Placeholder="Enter your number"
+                               PlaceholderColor="DarkSlateGray"
+                               MaxLength="13"
+                               Keyboard="Numeric"
+                               Text="{Binding WelcomeDataModel.MobileNumber}"
+                               ClearButtonVisibility="WhileEditing"/>
+                </Frame>
+                <Label TextColor="Red"
+                       Text="{Binding WelcomeDataModel.ErrorMessageMobileNumber}"
+                       Margin="15,5,0,0"/>
+                <Label Text="A six digit OTP will be sent via SMS to verify your mobile number!"
+                       Margin="0,10,0,0"
+                       TextColor="Black"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="FillAndExpand"
+                       FontSize="14"/>
+                    
+                </StackLayout>
+                <!-- Verfiy OTP Screen-->
+                <StackLayout VerticalOptions="CenterAndExpand"
+                             Margin="20,0"
+                             IsVisible="{Binding IsVerifyOTPScreen}">
+                    <Label Text="{Binding SentToText}"
+                           HorizontalOptions="Center"
+                           TextColor="Black"
+                           FontAttributes="Bold"
+                           FontSize="16"/>
+                    <Label Text="Change Number?"
+                           HorizontalOptions="Center"
+                           TextColor="{Binding ResendTextColor}"
+                           FontAttributes="Bold"
+                           FontSize="16"
+                           IsEnabled="{Binding IsResendTextEnabled}"
+                           Margin="0,30,0,0">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ChangeNumberCommand}"
+                                                  NumberOfTapsRequired="1"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <HorizontalStackLayout HorizontalOptions="CenterAndExpand"
+                                           Spacing="5"
+                                           Margin="0,20,0,0">
+                        <HorizontalStackLayout.Resources>
+                            <Style TargetType="Frame" x:Name="FrameOTPStyle">
+                                <Setter Property="VisualStateManager.VisualStateGroups">
+                                    <VisualStateGroupList>
+                                        <VisualStateGroup x:Name="SizeStates">
+                                            <VisualState x:Name="Empty">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BorderColor" Value="Gray" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState x:Name="Filled">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BorderColor" Value="Orange" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateGroupList>
+                                </Setter>
+                                <Setter Property="HeightRequest"
+                                        Value="50"/>
+                                <Setter Property="WidthRequest"
+                                        Value="50"/>
+                                <Setter Property="CornerRadius"
+                                        Value="30"/>
+                                <Setter Property="Padding"
+                                        Value="{OnPlatform Android='10,5,10,5'}"/>
+                                <Setter Property="HasShadow"
+                                        Value="True"/>
+                                <Setter Property="BackgroundColor"
+                                        Value="#10000000"/>
+                            </Style>
+                        </HorizontalStackLayout.Resources>
+                        <Frame x:Name="frame1">
+                            <Entry Style="{StaticResource EntryOTPStyle}"
+                                   Text="{Binding OTPDigit1}"
+                                   x:Name="OtpDigit1"
+                                   TextChanged="OtpDigit_TextChanged"/>
+                        </Frame>
+                        <Frame x:Name="frame2">
+                            <Entry Style="{StaticResource EntryOTPStyle}"
+                                   Text="{Binding OTPDigit2}"
+                                   x:Name="OtpDigit2"
+                                   TextChanged="OtpDigit_TextChanged"/>
+                        </Frame>
+                        <Frame  x:Name="frame3">
+                            <Entry Style="{StaticResource EntryOTPStyle}"
+                                   Text="{Binding OTPDigit3}"
+                                   x:Name="OtpDigit3"
+                                   TextChanged="OtpDigit_TextChanged"/>
+                        </Frame>
+                        <Frame x:Name="frame4">
+                            <Entry Style="{StaticResource EntryOTPStyle}"
+                                   Text="{Binding OTPDigit4}"
+                                   x:Name="OtpDigit4"
+                                   TextChanged="OtpDigit_TextChanged"/>
+                        </Frame>
+                        <Frame HeightRequest="50"
+                               x:Name="frame5">
+                            <Entry Style="{StaticResource EntryOTPStyle}"
+                                   Text="{Binding OTPDigit5}"
+                                   x:Name="OtpDigit5"
+                                   TextChanged="OtpDigit_TextChanged"/>
+                        </Frame>
+                        <Frame x:Name="frame6">
+                            <Entry Style="{StaticResource EntryOTPStyle}"
+                                   Text="{Binding OTPDigit6}"
+                                   x:Name="OtpDigit6"
+                                   TextChanged="OtpDigit_TextChanged"/>
+                        </Frame>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout HorizontalOptions="CenterAndExpand"
+                                           Spacing="4"
+                                           Margin="0,15,0,0">
+                        <Label Text="Not Recieved yet?"
+                           Margin="0,10,0,0"
+                           TextColor="Black"
+                           FontAttributes="Bold"
+                           FontSize="14"/>
+                        <Label Text="Resend OTP"
+                               TextDecorations="Underline"
+                               Margin="0,10,0,0"
+                               TextColor="{Binding ResendTextColor}"
+                               IsEnabled="{Binding IsResendTextEnabled}"
+                                FontAttributes="Bold"
+                                FontSize="14">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ResendCodeCommand}"
+                                                      NumberOfTapsRequired="1"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                        <Label Text="{Binding TimerText,StringFormat='{0:mm\\:ss}'}"
+                               Margin="0,10,0,0"
+                               TextColor="Black"
+                                FontSize="14"
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </StackLayout>
+
+                <Button Text="{Binding ButtonText}"
+                        BackgroundColor="#359AF8"
+                        Margin="20,0,20,20"
+                        CornerRadius="30"
+                        Command="{Binding GetOTPCommand}">
+
+                </Button>
+            </StackLayout>
+        </Grid>
+    </ScrollView>
+
+</ContentPage>
